@@ -1,0 +1,39 @@
+diff --git a/node_modules/react-native-screens/src/reanimated/ReanimatedNativeStackScreen.tsx b/node_modules/react-native-screens/src/reanimated/ReanimatedNativeStackScreen.tsx
+index c5773a4..c3ff9cd 100644
+--- a/node_modules/react-native-screens/src/reanimated/ReanimatedNativeStackScreen.tsx
++++ b/node_modules/react-native-screens/src/reanimated/ReanimatedNativeStackScreen.tsx
+@@ -59,6 +59,20 @@ const ReanimatedNativeStackScreen = React.forwardRef<
+   const closing = useSharedValue(0);
+   const goingForward = useSharedValue(0);
+ 
++  const onWillAppearReanimated = useEvent(
++    event => {
++      'worklet';
++
++      console.log('!!!onWillAppearReanimated', event);
++    },
++    [Platform.OS === 'android'
++      ? 'onWillAppear'
++      : ENABLE_FABRIC 
++      ? 'onWillAppear' 
++      : 'topWillAppear'
++    ],
++  );
++
+   return (
+     <AnimatedScreen
+       // @ts-ignore some problems with ref and onTransitionProgressReanimated being "fake" prop for parsing of `useEvent` return value
+@@ -98,7 +112,12 @@ const ReanimatedNativeStackScreen = React.forwardRef<
+             : 'topHeaderHeightChange',
+         ]
+       )}
+-      {...rest}>
++      {...rest}
++      onWillAppear={() => {
++        console.log('!!!onWillAppear JS')
++      }}
++      onWillAppearReanimated={onWillAppearReanimated}
++      >
+       <ReanimatedHeaderHeightContext.Provider value={headerHeight}>
+         <ReanimatedTransitionProgressContext.Provider
+           value={{
